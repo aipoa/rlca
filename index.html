@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cash 一键订阅</title>
+    <title>订阅中心</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -16,7 +16,8 @@
             color: #333;
         }
         .button {
-            margin-top: 20px;
+            display: inline-block;
+            margin: 20px auto;
             padding: 10px 20px;
             font-size: 18px;
             color: #fff;
@@ -32,8 +33,13 @@
     </style>
 </head>
 <body>
-    <h1>Cash 一键订阅</h1>
-    <p>点击下方按钮以直接跳转到 Clash 并订阅配置。</p>
-    <a href="clash://install-config?url=https://cloud.wujiyan.cc/f/qQV8iw/jiasqi.txt" class="button">一键订阅</a>
+    <h1>订阅中心</h1>
+    <p>点击下方按钮以直接跳转并订阅配置。</p>
+    
+    <!-- Clash 一键订阅按钮 -->
+    <a href="clash://install-config?url=https://cloud.wujiyan.cc/f/qQV8iw/jiasqi.txt" class="button">Clash 一键订阅</a>
+    
+    <!-- Shadowrocket 一键订阅按钮 -->
+    <a href="shadowrocket://subscribe?url=https://cloud.wujiyan.cc/f/qQV8iw/jiasqi.txt" class="button">小火箭 一键订阅</a>
 </body>
 </html>
