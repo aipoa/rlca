@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cash 一键订阅</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        h1, p {
+            color: #333;
+        }
+        .button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+            color: #fff;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        #password-container {
+            margin-top: 100px;
+        }
+        #password-input {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        #submit-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #28a745;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        #submit-button:hover {
+            background-color: #218838;
+        }
+        #lockout-message {
+            color: red;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        #protected-content {
+            display: none;
+        }
+    </style>
+    <script>
+        const correctPassword = "2182227287"; // 设置正确的密码
+        let attempts = 0; // 密码错误尝试次数
+        const maxAttempts = 3; // 最大尝试次数
+        const lockoutTime = 5 * 60 * 1000; // 锁定时间（毫秒），30分钟
+
+        function initialize() {
+            const lockoutEndTime = localStorage.getItem("lockoutEndTime");
+            if (lockoutEndTime && Date.now() < lockoutEndTime) {
+                updateLockoutMessage();
+                const submitButton = document.getElementById("submit-button");
+                submitButton.disabled = true;
+                setInterval(updateLockoutMessage, 1000);
+            }
+        }
+
+        function checkPassword() {
+            const inputPassword = document.getElementById("password-input").value;
+            const passwordContainer = document.getElementById("password-container");
+            const protectedContent = document.getElementById("protected-content");
+            const lockoutMessage = document.getElementById("lockout-message");
+            const submitButton = document.getElementById("submit-button");
+
+            const lockoutEndTime = localStorage.getItem("lockoutEndTime");
+            if (lockoutEndTime && Date.now() < lockoutEndTime) {
+                alert("密码尝试次数过多，请稍后再试！");
+                return;
+            }
+
+            if (inputPassword === correctPassword) {
+                passwordContainer.style.display = "none"; // 隐藏密码输入框
+                protectedContent.style.display = "block"; // 显示保护内容
+            } else {
+                attempts++;
+                if (attempts >= maxAttempts) {
+                    const newLockoutEndTime = Date.now() + lockoutTime;
+                    localStorage.setItem("lockoutEndTime", newLockoutEndTime); // 将锁定时间存储到 localStorage
+                    submitButton.disabled = true;
+                    updateLockoutMessage();
+                    setInterval(updateLockoutMessage, 1000); // 每秒更新剩余时间
+                    alert(`密码错误次数过多，请等待 5 分钟后重试！`);
+                } else {
+                    alert("密码错误，请重试！");
+                }
+            }
+        }
+
+        function updateLockoutMessage() {
+            const lockoutMessage = document.getElementById("lockout-message");
+            const submitButton = document.getElementById("submit-button");
+
+            const lockoutEndTime = localStorage.getItem("lockoutEndTime");
+            if (!lockoutEndTime) return;
+
+            const remainingTime = Math.max(0, Math.ceil((lockoutEndTime - Date.now()) / 1000)); // 剩余秒数
+            if (remainingTime <= 0) {
+                lockoutMessage.textContent = "";
+                submitButton.disabled = false; // 解锁提交按钮
+                localStorage.removeItem("lockoutEndTime"); // 清除锁定时间
+                attempts = 0; // 重置尝试次数
+            } else {
+                lockoutMessage.textContent = `请等待 ${remainingTime} 秒后重试。`;
+            }
+        }
+
+        window.onload = initialize;
+    </script>
+</head>
+<body>
+    <!-- 密码输入部分 -->
+    <div id="password-container">
+        <h1>请输入密码</h1>
+        <p>企鹅购买2182227287</p>
+        <input type="password" id="password-input" placeholder="输入密码">
+        <button id="submit-button" onclick="checkPassword()">提交</button>
+        <p id="lockout-message"></p>
+    </div>
+
+<!-- 受保护的内容 -->
+<div id="protected-content">
+    <h1>订阅中心</h1>
+    <p>点击下方按钮以直接跳转并订阅配置</p>
+    <p>若未跳转更换浏览器或手动打开APP</p>
+    <!-- Clash 一键订阅按钮 -->
+    <a href="clash://install-config?url=https://cloud.wujiyan.cc/f/qQV8iw/aio.txt" class="button">Clash 一键订阅</a>
+    <!-- Shadowrocket 一键订阅按钮 -->
+    <a href="shadowrocket://subscribe?url=https://cloud.wujiyan.cc/f/qQV8iw/aio.txt" class="button">小火箭 一键订阅</a>
+    <!-- 新增下载框 -->
+    <p>点击下方按钮以下载文件</p>
+    <a href="https://cloud.wujiyan.cc/f/QYpliz/%E5%AE%89%E5%8D%93%E7%89%88%E6%9C%AC.APK" class="button" download>安卓版下载</a>
+    <a href="https://cloud.wujiyan.cc/f/A4oWt7/%E7%94%B5%E8%84%91%E7%89%88%E6%9C%AC.exe" class="button" download>电脑版下载</a>
+    <p>苹果去苹果商店下载小火箭</p>
+</div>
+</body>
+</html>
